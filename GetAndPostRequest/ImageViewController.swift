@@ -8,6 +8,8 @@
 import UIKit
 
 class ImageViewController: UIViewController {
+    
+    private let imageURL = "https://source.unsplash.com/random"
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -26,17 +28,10 @@ class ImageViewController: UIViewController {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
         
-        guard let url = URL(string: "https://source.unsplash.com/random") else { return }
-        let session = URLSession.shared
-        session.dataTask(with: url) { (data, response, error) in
-            if let data = data, let image = UIImage(data: data) {
-                DispatchQueue.main.async {
-                    self.activityIndicator.stopAnimating()
-                    self.imageView.image = image
-                }
-            }
-        }.resume()
-        
+        NetworkManager.downloadImage(url: imageURL) { (image) in
+            self.activityIndicator.stopAnimating()
+            self.imageView.image = image
+        }
     }
     
 }
